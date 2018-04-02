@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
-import Console from "./Console";
+import { Console } from "./Console";
 
 class BaseRouter extends Component {
   render() {
