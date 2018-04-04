@@ -6,7 +6,7 @@ class Console extends Component {
   constructor() {
     super();
     this.state = {
-      location: [{ x: 100, y: 100 }]
+      location: [{ x: 100, y: 100 }, { x: 50, y: 75 }]
     };
     this.createLongRangeRadar = this.createLongRangeRadar.bind(this);
   }
@@ -29,13 +29,10 @@ class Console extends Component {
       .attr("class", "screen");
 
     screen
-      .append("rect")
-      .attr("x", 0)
-      .attr("y", 0)
-      .attr("rx", 15)
-      .attr("ry", 15)
-      .attr("width", 500)
-      .attr("height", 500)
+      .append("circle")
+      .attr("cx", 250)
+      .attr("cy", 250)
+      .attr("r", 250)
       .attr("fill", "url(#Gradient1)")
       .attr("class", "field");
 
@@ -66,8 +63,8 @@ class Console extends Component {
       .attr("y", function(d) {
         return yScale(d.y);
       })
-      .attr("width", 2)
-      .attr("height", 2);
+      .attr("width", 4)
+      .attr("height", 4);
   }
 
   render() {
