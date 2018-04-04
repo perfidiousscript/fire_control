@@ -6,16 +6,46 @@ class Console extends Component {
   constructor() {
     super();
     this.state = {
-      location: [{ x: 100, y: 100 }, { x: 50, y: 75 }]
+      location: [
+        { x: -100, y: -100 },
+        { x: 50, y: 75 },
+        { x: 150, y: 75 },
+        { x: 200, y: 300 }
+      ],
+      sweepPosition: 0
     };
     this.createLongRangeRadar = this.createLongRangeRadar.bind(this);
+    this.calcDegrees = this.calcDegrees.bind(this);
   }
   componentDidMount() {
-    this.createLongRangeRadar();
+    this.sweep();
+  }
+
+  sweep() {
+    window.setTimeout(() => {
+      this.advanceSweep();
+      this.createLongRangeRadar();
+    }, 3);
+  }
+
+  advanceSweep() {
+    let newSweep = (this.state.sweepPosition + 1) % 360;
+    this.setState(
+      {
+        sweepPosition: newSweep
+      },
+      () => {
+        this.sweep();
+      }
+    );
+  }
+
+  calcDegrees(x, y) {
+    return Math.round(Math.atan2(x, y) * 180 / Math.PI);
   }
 
   createLongRangeRadar() {
-    const { location } = this.state;
+    const { location, sweepPosition } = this.state;
     const node = this.node;
     const yScale = scaleLinear()
       .domain([-500, 500])
@@ -56,6 +86,17 @@ class Console extends Component {
       .selectAll("rect")
       .data(location)
       .style("fill", "#8bb3b2")
+      .attr("opacity", function(d) {
+        var opacity = 0;
+        if (
+          Math.round(Math.atan2(d.x, d.y) * 180 / Math.PI) <
+            sweepPosition + 10 &&
+          Math.round(Math.atan2(d.x, d.y) * 180 / Math.PI) > sweepPosition - 10
+        ) {
+          opacity = 1;
+        }
+        return opacity;
+      })
       .attr("class", "target")
       .attr("x", function(d) {
         return xScale(d.x);
@@ -72,8 +113,8 @@ class Console extends Component {
       <svg ref={node => (this.node = node)} width={500} height={500}>
         <defs>
           <linearGradient id="Gradient1" x1="0" x2="1" y1="0" y2="1">
-            <stop offset="55%" stop-color="rgb(33, 54, 51)" />
-            <stop offset="100%" stop-color="rgb(97, 134, 137)" />
+            <stop offset="55%" stopColor="rgb(33, 54, 51)" />
+            <stop offset="100%" stopColor="rgb(97, 134, 137)" />
           </linearGradient>
         </defs>
       </svg>
