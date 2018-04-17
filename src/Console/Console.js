@@ -12,7 +12,8 @@ class Console extends Component {
         { x: 150, y: 75 },
         { x: 200, y: 300 }
       ],
-      sweepPosition: 0
+      sweepPosition: 0,
+      rangeFinderPosition: 0
     };
     this.createLongRangeRadar = this.createLongRangeRadar.bind(this);
   }
@@ -24,6 +25,7 @@ class Console extends Component {
     window.setTimeout(() => {
       this.advanceSweep();
       this.createLongRangeRadar();
+      this.createRangeFinder();
     }, 3);
   }
 
@@ -40,7 +42,7 @@ class Console extends Component {
   }
 
   createLongRangeRadar() {
-    const { location, sweepPosition } = this.state;
+    const { location, sweepPosition, rangeFinderPosition } = this.state;
     const node = this.node;
     const yScale = scaleLinear()
       .domain([-500, 500])
@@ -101,6 +103,42 @@ class Console extends Component {
       })
       .attr("width", 4)
       .attr("height", 4);
+  }
+
+  createRangeFinder() {
+    let { rangeFinderPosition } = this.props;
+    const node = this.node;
+    const yScale = scaleLinear()
+      .domain([-500, 500])
+      .range([0, 500]);
+    const xScale = scaleLinear()
+      .domain([-500, 500])
+      .range([0, 500]);
+
+    let rangeFinder = select(node)
+      .append("g")
+      .attr("class", "rangeFinder");
+
+    rangeFinder
+      .selectAll("rect")
+      .data(rangeFinderPosition)
+      .enter()
+      .append("rect");
+
+    rangeFinder
+      .selectAll("rect")
+      .data(rangeFinderPosition)
+      .exit()
+      .remove();
+
+    rangeFinder
+      .selectAll("rect")
+      .data(rangeFinderPosition)
+      .style("fill", "#8bb3b2")
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("width", 30)
+      .attr("height", 250);
   }
 
   render() {
