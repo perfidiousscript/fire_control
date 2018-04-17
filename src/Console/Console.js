@@ -15,7 +15,6 @@ class Console extends Component {
       sweepPosition: 0
     };
     this.createLongRangeRadar = this.createLongRangeRadar.bind(this);
-    this.calcDegrees = this.calcDegrees.bind(this);
   }
   componentDidMount() {
     this.sweep();
@@ -38,10 +37,6 @@ class Console extends Component {
         this.sweep();
       }
     );
-  }
-
-  calcDegrees(x, y) {
-    return Math.round(Math.atan2(x, y) * 180 / Math.PI);
   }
 
   createLongRangeRadar() {
@@ -88,11 +83,11 @@ class Console extends Component {
       .style("fill", "#8bb3b2")
       .attr("opacity", function(d) {
         var opacity = 0;
-        if (
-          Math.round(Math.atan2(d.x, d.y) * 180 / Math.PI) <
-            sweepPosition + 10 &&
-          Math.round(Math.atan2(d.x, d.y) * 180 / Math.PI) > sweepPosition - 10
-        ) {
+        let deg = Math.round(Math.atan2(d.x, d.y) * 180 / Math.PI);
+        if (deg < 0) {
+          deg = deg + 360;
+        }
+        if (deg < sweepPosition + 10 && deg > sweepPosition - 10) {
           opacity = 1;
         }
         return opacity;
